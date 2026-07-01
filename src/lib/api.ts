@@ -1,4 +1,13 @@
-import type { ApiEnvelope, AuthSession, Settings } from "../types";
+import type {
+  ApiEnvelope,
+  AuthSession,
+  ModifyOrderPayload,
+  OrderRow,
+  PlaceOrderPayload,
+  Settings,
+  TradeRow,
+  Variety,
+} from "../types";
 
 /** Extra payload the backend attaches when the caller IP isn't whitelisted. */
 export type IpWhitelistData = {
@@ -141,6 +150,67 @@ export const api = {
   logout(settings: Settings, auth: AuthSession) {
     return request<unknown>("/api/v1/auth/logout", {
       method: "GET",
+      auth,
+      settings,
+    });
+  },
+
+  // --- Orders ---------------------------------------------------------------
+
+  orderBook(settings: Settings, auth: AuthSession, signal?: AbortSignal) {
+    return request<OrderRow[]>("/api/v1/orders/book", {
+      method: "GET",
+      auth,
+      settings,
+      signal,
+    });
+  },
+
+  tradeBook(settings: Settings, auth: AuthSession, signal?: AbortSignal) {
+    return request<TradeRow[]>("/api/v1/orders/trade-book", {
+      method: "GET",
+      auth,
+      settings,
+      signal,
+    });
+  },
+
+  placeOrder(
+    settings: Settings,
+    auth: AuthSession,
+    variety: Variety,
+    payload: PlaceOrderPayload,
+  ) {
+    return request<Record<string, unknown>>(`/api/v1/orders/${variety}`, {
+      method: "POST",
+      body: payload,
+      auth,
+      settings,
+    });
+  },
+
+  modifyOrder(
+    settings: Settings,
+    auth: AuthSession,
+    orderId: string,
+    payload: ModifyOrderPayload,
+  ) {
+    return request<Record<string, unknown>>(
+      `/api/v1/orders/regular/${encodeURIComponent(orderId)}`,
+      { method: "PUT", body: payload, auth, settings },
+    );
+  },
+
+  cancelOrder(settings: Settings, auth: AuthSession, orderId: string) {
+    return request<Record<string, unknown>>(
+      `/api/v1/orders/regular/${encodeURIComponent(orderId)}`,
+      { method: "DELETE", auth, settings },
+    );
+  },
+
+  cancelAll(settings: Settings, auth: AuthSession) {
+    return request<Record<string, unknown>>("/api/v1/orders/cancel-all", {
+      method: "POST",
       auth,
       settings,
     });

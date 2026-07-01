@@ -4,7 +4,7 @@ import { Alert, Button, Loading } from "../components/ui";
 import { ErrorNotice } from "../components/ErrorNotice";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/api";
-import { formatCurrency, humanize, initials } from "../lib/format";
+import { formatCurrency, humanize } from "../lib/format";
 import type { FundSummary } from "../types";
 
 // Headline metrics shown as big cards (in display order), if present.
@@ -18,7 +18,7 @@ const HEADLINE: { key: string; label: string; hero?: boolean }[] = [
 ];
 
 export function Dashboard() {
-  const { session, settings, signOut } = useAuth();
+  const { session, settings } = useAuth();
 
   const query = useQuery({
     queryKey: ["fund-summary", settings.baseUrl, session?.apiKey],
@@ -26,35 +26,12 @@ export function Dashboard() {
     queryFn: ({ signal }) => api.fundSummary(settings, session!, signal),
   });
 
-  async function handleLogout() {
-    try {
-      if (session) await api.logout(settings, session);
-    } catch {
-      /* even if the upstream logout fails, clear the local session */
-    } finally {
-      signOut();
-    }
-  }
-
   const summary: FundSummary | undefined = Array.isArray(query.data)
     ? query.data[0]
     : (query.data as FundSummary | undefined);
 
   return (
-    <Layout
-      right={
-        <div className="user-pill">
-          <div className="avatar">{initials(session?.userName)}</div>
-          <div className="user-pill__meta">
-            <span className="user-pill__name">{session?.userName || "Trader"}</span>
-            <span className="user-pill__sub">{session?.email || session?.userId}</span>
-          </div>
-          <Button variant="danger" onClick={handleLogout}>
-            Logout
-          </Button>
-        </div>
-      }
-    >
+    <Layout>
       <div className="row-between" style={{ marginBottom: 20 }}>
         <div>
           <h1 style={{ margin: 0, fontSize: 26, letterSpacing: "-0.02em" }}>
