@@ -4,6 +4,7 @@ import type {
   ConvertPositionPayload,
   HoldingRow,
   ModifyOrderPayload,
+  OhlcResponse,
   OrderRow,
   PlaceOrderPayload,
   PositionsResponse,
@@ -249,6 +250,42 @@ export const api = {
       body: payload,
       auth,
       settings,
+    });
+  },
+
+  // --- Market data ----------------------------------------------------------
+
+  ohlc(
+    settings: Settings,
+    auth: AuthSession,
+    instruments: string[],
+    signal?: AbortSignal,
+  ) {
+    const qs = instruments
+      .map((i) => `i=${encodeURIComponent(i)}`)
+      .join("&");
+    return request<OhlcResponse>(`/api/v1/market/quote/ohlc?${qs}`, {
+      method: "GET",
+      auth,
+      settings,
+      signal,
+    });
+  },
+
+  ltp(
+    settings: Settings,
+    auth: AuthSession,
+    instruments: string[],
+    signal?: AbortSignal,
+  ) {
+    const qs = instruments
+      .map((i) => `i=${encodeURIComponent(i)}`)
+      .join("&");
+    return request<OhlcResponse>(`/api/v1/market/quote/ltp?${qs}`, {
+      method: "GET",
+      auth,
+      settings,
+      signal,
     });
   },
 };

@@ -752,6 +752,106 @@ a {
   border-color: var(--border);
 }
 
+/* --- Watchlist ------------------------------------------------------------- */
+.add-symbol {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.add-symbol .input {
+  flex: 1;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot--pos {
+  background: var(--brand);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.dot--neg {
+  background: var(--danger);
+}
+
+.dot--warn {
+  background: var(--warn);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.ltp {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.flash-up {
+  animation: flash-up 0.5s ease-out;
+}
+
+.flash-down {
+  animation: flash-down 0.5s ease-out;
+}
+
+@keyframes flash-up {
+  0% {
+    background: rgba(34, 197, 94, 0.35);
+    color: #86efac;
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+@keyframes flash-down {
+  0% {
+    background: rgba(244, 63, 94, 0.35);
+    color: #fda4af;
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.icon-btn:hover {
+  background: rgba(244, 63, 94, 0.14);
+  color: var(--danger);
+}
+
 /* --- Modal ----------------------------------------------------------------- */
 .modal-backdrop {
   position: fixed;

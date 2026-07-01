@@ -4,6 +4,7 @@ import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { Orders } from "./pages/Orders";
 import { Portfolio } from "./pages/Portfolio";
+import { Watchlist } from "./pages/Watchlist";
 import { useAuth } from "./context/AuthContext";
 
 export default function App() {
@@ -36,6 +37,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Portfolio />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/watchlist"
+        element={
+          <ProtectedRoute>
+            <Watchlist />
           </ProtectedRoute>
         }
       />

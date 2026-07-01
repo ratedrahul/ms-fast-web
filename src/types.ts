@@ -101,3 +101,44 @@ export type ConvertPositionPayload = {
   old_product: ProductType;
   new_product: ProductType;
 };
+
+// --- Market data / watchlist ------------------------------------------------
+
+export type Ohlc = { open: number; high: number; low: number; close: number };
+
+/** Shape of the mStock OHLC quote response, keyed by "EXCHANGE:SYMBOL". */
+export type OhlcResponse = Record<
+  string,
+  { instrument_token?: number; last_price?: number; ohlc?: Ohlc }
+>;
+
+/** A parsed tick from the binary websocket stream. */
+export type Tick = {
+  token: number;
+  lastPrice: number;
+  ohlc?: Ohlc;
+  volume?: number;
+  buyQuantity?: number;
+  sellQuantity?: number;
+};
+
+/** A live-updating quote row shown in the watchlist. */
+export type Quote = {
+  symbol: string;
+  token?: number;
+  ltp: number;
+  close: number;
+  open?: number;
+  high?: number;
+  low?: number;
+  volume?: number;
+  seq: number;
+  dir: "up" | "down" | "";
+};
+
+export type StreamStatus =
+  | "idle"
+  | "connecting"
+  | "connected"
+  | "reconnecting"
+  | "error";

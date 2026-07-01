@@ -2,6 +2,9 @@ import type { AuthSession, Settings } from "../types";
 
 const SESSION_KEY = "msfast.session";
 const SETTINGS_KEY = "msfast.settings";
+const WATCHLIST_KEY = "msfast.watchlist";
+
+const DEFAULT_WATCHLIST = ["NSE:INFY", "NSE:TCS", "NSE:RELIANCE", "NSE:HDFCBANK"];
 
 const DEFAULT_BASE_URL =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
@@ -48,4 +51,21 @@ export function saveSession(session: AuthSession): void {
 
 export function clearSession(): void {
   localStorage.removeItem(SESSION_KEY);
+}
+
+export function loadWatchlist(): string[] {
+  try {
+    const raw = localStorage.getItem(WATCHLIST_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.filter((s) => typeof s === "string");
+    }
+  } catch {
+    /* ignore corrupt storage */
+  }
+  return [...DEFAULT_WATCHLIST];
+}
+
+export function saveWatchlist(symbols: string[]): void {
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(symbols));
 }
