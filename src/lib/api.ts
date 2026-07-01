@@ -1,14 +1,34 @@
 import type { ApiEnvelope, AuthSession, Settings } from "../types";
 
+/** Extra payload the backend attaches when the caller IP isn't whitelisted. */
+export type IpWhitelistData = {
+  ip_whitelist_required?: boolean;
+  server_ip?: string | null;
+  help_url?: string;
+  instructions?: string;
+};
+
 export class ApiError extends Error {
   status: number;
   errorType?: string | null;
+  data?: IpWhitelistData | null;
 
-  constructor(message: string, status: number, errorType?: string | null) {
+  constructor(
+    message: string,
+    status: number,
+    errorType?: string | null,
+    data?: IpWhitelistData | null,
+  ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.errorType = errorType;
+    this.data = data;
+  }
+
+  /** True when mStock rejected the request because the IP isn't whitelisted. */
+  get isIpWhitelist(): boolean {
+    return Boolean(this.data?.ip_whitelist_required);
   }
 }
 
@@ -66,7 +86,12 @@ async function request<T>(path: string, opts: RequestOptions): Promise<T> {
       (res.status === 401
         ? "Unauthorized — your session may have expired. Please log in again."
         : `Request failed (${res.status})`);
-    throw new ApiError(message, res.status, payload?.error_type);
+    throw new ApiError(
+      message,
+      res.status,
+      payload?.error_type,
+      (payload?.data as IpWhitelistData | null) ?? null,
+    );
   }
 
   return (payload ? (payload.data as T) : (text as unknown as T)) as T;

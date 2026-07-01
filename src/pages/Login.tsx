@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Button, Card, Field } from "../components/ui";
+import { ErrorNotice } from "../components/ErrorNotice";
 import { useAuth } from "../context/AuthContext";
 import { api, ApiError } from "../lib/api";
 import type { AuthSession, LoginMethod, Settings } from "../types";
@@ -25,7 +26,7 @@ export function Login() {
   const [code, setCode] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [info, setInfo] = useState<string | null>(null);
 
   function currentSettings(): Settings {
@@ -52,7 +53,7 @@ export function Login() {
           : "Credentials accepted. Enter the current code from your authenticator app.",
       );
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Login failed.");
+      setError(err instanceof ApiError ? err : new Error("Login failed."));
     } finally {
       setLoading(false);
     }
@@ -84,7 +85,7 @@ export function Login() {
       signIn(session);
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Verification failed.");
+      setError(err instanceof ApiError ? err : new Error("Verification failed."));
     } finally {
       setLoading(false);
     }
@@ -123,7 +124,7 @@ export function Login() {
               </button>
             </div>
 
-            {error && <Alert kind="error">{error}</Alert>}
+            {error != null && <ErrorNotice error={error} fallback="Login failed." />}
 
             <form onSubmit={handleCredentials}>
               <Field
@@ -188,7 +189,9 @@ export function Login() {
             }
           >
             {info && <Alert kind="info">{info}</Alert>}
-            {error && <Alert kind="error">{error}</Alert>}
+            {error != null && (
+              <ErrorNotice error={error} fallback="Verification failed." />
+            )}
 
             <form onSubmit={handleVerify}>
               <Field

@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Layout } from "../components/Layout";
 import { Alert, Button, Loading } from "../components/ui";
+import { ErrorNotice } from "../components/ErrorNotice";
 import { useAuth } from "../context/AuthContext";
-import { api, ApiError } from "../lib/api";
+import { api } from "../lib/api";
 import { formatCurrency, humanize, initials } from "../lib/format";
 import type { FundSummary } from "../types";
 
@@ -77,11 +78,10 @@ export function Dashboard() {
       {query.isLoading && <Loading label="Fetching fund summary…" />}
 
       {query.isError && (
-        <Alert kind="error">
-          {query.error instanceof ApiError
-            ? query.error.message
-            : "Could not load fund summary."}
-        </Alert>
+        <ErrorNotice
+          error={query.error}
+          fallback="Could not load fund summary."
+        />
       )}
 
       {summary && (
