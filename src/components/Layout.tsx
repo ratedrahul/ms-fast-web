@@ -8,6 +8,7 @@ import { initials } from "../lib/format";
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
   { to: "/orders", label: "Orders", end: false },
+  { to: "/portfolio", label: "Portfolio", end: false },
 ];
 
 export function Layout({ children }: { children: ReactNode }) {

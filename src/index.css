@@ -369,6 +369,22 @@ a {
   color: var(--brand);
 }
 
+.stat__sub {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-faint);
+}
+
+/* --- P&L colouring --------------------------------------------------------- */
+.pnl--pos {
+  color: var(--brand);
+}
+
+.pnl--neg {
+  color: var(--danger);
+}
+
 .stat--hero {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.14), rgba(56, 189, 248, 0.06)), var(--surface);

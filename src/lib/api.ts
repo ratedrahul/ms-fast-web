@@ -1,9 +1,12 @@
 import type {
   ApiEnvelope,
   AuthSession,
+  ConvertPositionPayload,
+  HoldingRow,
   ModifyOrderPayload,
   OrderRow,
   PlaceOrderPayload,
+  PositionsResponse,
   Settings,
   TradeRow,
   Variety,
@@ -211,6 +214,39 @@ export const api = {
   cancelAll(settings: Settings, auth: AuthSession) {
     return request<Record<string, unknown>>("/api/v1/orders/cancel-all", {
       method: "POST",
+      auth,
+      settings,
+    });
+  },
+
+  // --- Portfolio ------------------------------------------------------------
+
+  holdings(settings: Settings, auth: AuthSession, signal?: AbortSignal) {
+    return request<HoldingRow[]>("/api/v1/portfolio/holdings", {
+      method: "GET",
+      auth,
+      settings,
+      signal,
+    });
+  },
+
+  positions(settings: Settings, auth: AuthSession, signal?: AbortSignal) {
+    return request<PositionsResponse>("/api/v1/portfolio/positions", {
+      method: "GET",
+      auth,
+      settings,
+      signal,
+    });
+  },
+
+  convertPosition(
+    settings: Settings,
+    auth: AuthSession,
+    payload: ConvertPositionPayload,
+  ) {
+    return request<Record<string, unknown>>("/api/v1/portfolio/convert-position", {
+      method: "POST",
+      body: payload,
       auth,
       settings,
     });

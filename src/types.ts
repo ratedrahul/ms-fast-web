@@ -80,3 +80,24 @@ export type ModifyOrderPayload = {
  */
 export type OrderRow = Record<string, unknown>;
 export type TradeRow = Record<string, unknown>;
+
+// --- Portfolio --------------------------------------------------------------
+
+export type HoldingRow = Record<string, unknown>;
+export type PositionRow = Record<string, unknown>;
+
+/** Positions may arrive as a flat array or a Kite-style { net, day } object. */
+export type PositionsResponse =
+  | PositionRow[]
+  | { net?: PositionRow[]; day?: PositionRow[] };
+
+/** Payload for converting a position between product types. */
+export type ConvertPositionPayload = {
+  tradingsymbol: string;
+  exchange: Exchange;
+  transaction_type: TransactionType;
+  position_type: string;
+  quantity: number;
+  old_product: ProductType;
+  new_product: ProductType;
+};

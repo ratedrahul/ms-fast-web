@@ -12,6 +12,26 @@ export function formatCurrency(value: string | number | undefined): string {
   return inr.format(n);
 }
 
+/** Format a value as INR with an explicit +/- sign (for P&L figures). */
+export function formatSigned(value: number): string {
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${inr.format(Math.abs(value))}`;
+}
+
+/** Format a percentage with sign and two decimals. */
+export function formatPct(value: number): string {
+  if (!Number.isFinite(value)) return "—";
+  const sign = value > 0 ? "+" : "";
+  return `${sign}${value.toFixed(2)}%`;
+}
+
+/** CSS modifier for a P&L number: positive/negative/neutral. */
+export function pnlClass(value: number): string {
+  if (value > 0) return "pnl--pos";
+  if (value < 0) return "pnl--neg";
+  return "";
+}
+
 /** Humanise an UPPER_SNAKE_CASE key into "Title Case". */
 export function humanize(key: string): string {
   return key
